@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conway's Game of Life</title>
+    <title>康威生命游戏</title>
     <style>
         * {
             margin: 0;
@@ -75,7 +75,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
-            text-transform: uppercase;
             letter-spacing: 1px;
         }
         
@@ -163,39 +162,39 @@
     </style>
 </head>
 <body>
-    <h1>🎮 Conway's Game of Life</h1>
+    <h1>🎮 康威生命游戏</h1>
     
     <div class="stats">
-        <div class="stat">Generation: <span id="generation">0</span></div>
-        <div class="stat">Alive: <span id="alive">0</span></div>
-        <div class="stat">Status: <span id="status">PAUSED</span></div>
+        <div class="stat">世代: <span id="generation">0</span></div>
+        <div class="stat">存活: <span id="alive">0</span></div>
+        <div class="stat">状态: <span id="status">已暂停</span></div>
     </div>
     
     <canvas id="gameCanvas"></canvas>
     
     <div class="controls">
-        <button class="btn-primary" id="startBtn">▶ Start</button>
-        <button class="btn-secondary" id="stepBtn">⏭ Step</button>
-        <button class="btn-danger" id="clearBtn">🗑 Clear</button>
-        <button class="btn-warning" id="randomBtn">🎲 Random</button>
+        <button class="btn-primary" id="startBtn">▶ 开始</button>
+        <button class="btn-secondary" id="stepBtn">⏭ 单步</button>
+        <button class="btn-danger" id="clearBtn">🗑 清空</button>
+        <button class="btn-warning" id="randomBtn">🎲 随机</button>
     </div>
     
     <div class="patterns">
-        <button class="btn-secondary" onclick="loadPattern('glider')">Glider</button>
-        <button class="btn-secondary" onclick="loadPattern('blinker')">Blinker</button>
-        <button class="btn-secondary" onclick="loadPattern('pulsar')">Pulsar</button>
-        <button class="btn-secondary" onclick="loadPattern('gosper')">Gosper Gun</button>
+        <button class="btn-secondary" onclick="loadPattern('glider')">滑翔机</button>
+        <button class="btn-secondary" onclick="loadPattern('blinker')">闪烁器</button>
+        <button class="btn-secondary" onclick="loadPattern('pulsar')">脉冲星</button>
+        <button class="btn-secondary" onclick="loadPattern('gosper')">高斯帕枪</button>
     </div>
     
     <div class="speed-control">
-        <label>Speed: </label>
+        <label>速度: </label>
         <input type="range" id="speedSlider" min="1" max="60" value="10">
-        <span id="speedValue">10 FPS</span>
+        <span id="speedValue">10 帧/秒</span>
     </div>
     
     <div class="instructions">
-        <p>🖱 Click to toggle cells | Drag to draw</p>
-        <p>Space: Pause/Resume | R: Random | C: Clear</p>
+        <p>🖱 点击切换细胞 | 拖动绘制</p>
+        <p>空格: 暂停/继续 | R: 随机 | C: 清空</p>
     </div>
 
     <script>
@@ -297,7 +296,7 @@
             // Update stats
             document.getElementById('generation').textContent = generation;
             document.getElementById('alive').textContent = alive;
-            document.getElementById('status').textContent = running ? 'RUNNING' : 'PAUSED';
+            document.getElementById('status').textContent = running ? '运行中' : '已暂停';
         }
         
         // Game loop
@@ -311,7 +310,7 @@
         // Start/Stop
         function toggleRunning() {
             running = !running;
-            document.getElementById('startBtn').textContent = running ? '⏸ Pause' : '▶ Start';
+            document.getElementById('startBtn').textContent = running ? '⏸ 暂停' : '▶ 开始';
         }
         
         // Random grid
@@ -331,7 +330,7 @@
             grid = createGrid();
             generation = 0;
             running = false;
-            document.getElementById('startBtn').textContent = '▶ Start';
+            document.getElementById('startBtn').textContent = '▶ 开始';
             draw();
         }
         
@@ -440,7 +439,7 @@
         const speedSlider = document.getElementById('speedSlider');
         speedSlider.addEventListener('input', (e) => {
             fps = parseInt(e.target.value);
-            document.getElementById('speedValue').textContent = `${fps} FPS`;
+            document.getElementById('speedValue').textContent = `${fps} 帧/秒`;
             if (intervalId) {
                 clearInterval(intervalId);
                 intervalId = setInterval(gameLoop, 1000 / fps);
