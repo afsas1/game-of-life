@@ -1,454 +1,522 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>康威生命游戏</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-        }
-        
-        .stats {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 20px;
-            font-size: 1.1em;
-        }
-        
-        .stat {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .stat span {
-            color: #00d4ff;
-            font-weight: bold;
-        }
-        
-        #gameCanvas {
-            border: 3px solid rgba(0, 212, 255, 0.5);
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3),
-                        inset 0 0 50px rgba(0, 0, 0, 0.5);
-            cursor: crosshair;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        button {
-            padding: 12px 25px;
-            font-size: 1em;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #7b2cbf, #5a189a);
-            color: #fff;
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
-            color: #fff;
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #ffd93d, #f9c74f);
-            color: #1a1a2e;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .speed-control {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .speed-control label {
-            font-size: 1em;
-        }
-        
-        #speedSlider {
-            width: 200px;
-            height: 8px;
-            -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            outline: none;
-        }
-        
-        #speedSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        .instructions {
-            margin-top: 20px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9em;
-        }
-        
-        .instructions p {
-            margin: 5px 0;
-        }
-        
-        .patterns {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .patterns button {
-            padding: 8px 15px;
-            font-size: 0.85em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>洛克攻略站 - 精灵图鉴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#4A90D9;--bg:#F5F5F5;--card:#fff;--text:#333;--sub:#888;--border:#EAEAEA;
+  --fire:#F57C31;--water:#4A90D9;--grass:#7BC142;--electric:#F5C542;
+  --ice:#7EC8E3;--dragon:#7B68EE;--fighting:#D94848;--poison:#A855F7;
+  --ghost:#6B5B95;--normal:#A8A878;--dark:#4A4458;--earth:#C4A882;
+  --flying:#A98FF3;--bug:#92BC2C;--mech:#7B8794;--light:#F9E0B7;--shadow:#2D2D2D;
+}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;padding-bottom:70px;}
+
+.topbar{background:var(--blue);padding:13px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.back-btn{color:#fff;font-size:22px;cursor:pointer;width:28px;opacity:0;transition:opacity 0.2s;user-select:none;}
+.back-btn.show{opacity:1;}
+.topbar-title{font-size:17px;font-weight:600;color:#fff;flex:1;}
+.search-box{flex:1;display:flex;align-items:center;background:rgba(255,255,255,0.2);border-radius:20px;padding:7px 14px;}
+.search-box input{background:none;border:none;outline:none;color:#fff;font-size:13px;width:100%;}
+.search-box input::placeholder{color:rgba(255,255,255,0.65);}
+
+.page{display:none;animation:fadeIn 0.22s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.hero{position:relative;height:170px;overflow:hidden;border-radius:0 0 20px 20px;margin-bottom:4px;}
+.hero-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s;}
+.hero-inner.inactive{opacity:0;pointer-events:none;}
+.hero h2{font-size:30px;color:#fff;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.hero p{color:rgba(255,255,255,0.85);font-size:14px;margin-top:8px;}
+.hero-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.hdot{width:7px;height:7px;border-radius:4px;background:rgba(255,255,255,0.45);cursor:pointer;transition:all 0.3s;}
+.hdot.on{background:#fff;width:20px;}
+
+.card{background:var(--card);border-radius:16px;margin:12px 16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.section-title{font-size:15px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #F0F0F0;display:flex;align-items:center;gap:6px;}
+.section-title .emoji{font-size:18px;}
+
+.qnav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.qnav-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 4px;border-radius:12px;cursor:pointer;transition:background 0.2s;}
+.qnav-item:hover{background:#F8F9FA;}
+.qnav-item .icon{font-size:26px;}
+.qnav-item .txt{font-size:12px;color:#666;}
+
+.type-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.tchip{width:62px;height:62px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;cursor:pointer;transition:transform 0.18s;flex-direction:column;gap:2px;}
+.tchip:hover{transform:scale(1.08);}
+.tchip .sub{font-size:10px;opacity:0.8;font-weight:400;}
+
+.hot-list{display:flex;flex-direction:column;gap:10px;}
+.hot-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s;}
+.hot-item:hover{background:#F8F9FA;}
+.hot-item .emoji{font-size:28px;}
+.hot-item .rname{font-size:15px;font-weight:600;}
+.hot-item .rsub{font-size:12px;color:var(--sub);margin-top:2px;}
+.hot-item .rarrow{color:#CCC;margin-left:auto;font-size:18px;}
+
+/* SPIRITS LIST */
+.list-tabs{display:flex;gap:8px;padding:12px 16px;background:#fff;overflow-x:auto;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.ltab{padding:6px 16px;border-radius:20px;font-size:13px;color:#888;background:#F0F0F0;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.ltab.on{background:var(--blue);color:#fff;}
+.sort-row{display:flex;gap:8px;padding:10px 16px;background:#fff;overflow-x:auto;white-space:nowrap;}
+.sbtn{padding:5px 14px;border-radius:14px;font-size:12px;color:#999;background:#F5F5F5;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.sbtn.on{background:#E8F4FF;color:var(--blue);font-weight:500;}
+.count{font-size:12px;color:var(--sub);padding:6px 16px 10px;}
+.slist{padding:10px 16px 20px;display:flex;flex-direction:column;gap:10px;}
+.scard{background:var(--card);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:all 0.2s;}
+.scard:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.1);}
+.avt{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.sp{flex:1;min-width:0;}
+.spname{font-size:15px;font-weight:600;margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.ttag{font-size:10px;padding:2px 9px;border-radius:10px;color:#fff;}
+.spstats{font-size:12px;color:var(--sub);display:flex;gap:12px;}
+.stars{color:#FFB800;letter-spacing:-1px;}
+
+/* DETAIL */
+.dhdr{padding:36px 20px 24px;display:flex;flex-direction:column;align-items:center;color:#fff;}
+.davatar{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.2);}
+.dname{font-size:24px;font-weight:700;margin-bottom:10px;}
+.dtags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.dbadge{padding:3px 14px;border-radius:12px;font-size:12px;background:rgba(255,255,255,0.25);}
+
+.sg{display:grid;gap:12px;margin:8px 0;}
+.srow{display:flex;align-items:center;gap:10px;}
+.slbl{font-size:12px;color:#888;width:34px;text-align:right;flex-shrink:0;}
+.sbg{flex:1;height:11px;background:#F0F0F0;border-radius:6px;overflow:hidden;}
+.sbar{height:100%;border-radius:6px;transition:width 1s ease;}
+.sval{font-size:12px;font-weight:600;width:26px;text-align:right;flex-shrink:0;}
+
+.sk-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.sk-tag{background:#EEF3FF;color:var(--blue);padding:5px 14px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:6px;}
+
+.counter-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.ci{border-radius:12px;padding:14px;}
+.ci.grn{background:#F1F8E9;}
+.ci.red{background:#FFEBEE;}
+.cilbl{font-size:12px;font-weight:600;margin-bottom:10px;color:#555;}
+.ctags{display:flex;flex-wrap:wrap;gap:6px;}
+.ctag{padding:4px 12px;border-radius:10px;font-size:12px;color:#fff;}
+
+.ec{display:flex;align-items:center;justify-content:center;gap:0;padding:12px 0;flex-wrap:wrap;}
+.ei{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ecirc{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;text-align:center;padding:8px;color:#fff;font-weight:600;line-height:1.3;}
+.e-name{font-size:12px;color:#666;}
+.e-arr{font-size:22px;color:#DDD;margin:0 2px;}
+
+.share-btn{width:calc(100% - 32px);margin:14px 16px;height:46px;background:var(--blue);color:#fff;border:none;border-radius:23px;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(74,144,217,0.35);}
+
+/* TYPE CHART */
+.tc-sel{display:flex;gap:8px;padding:12px 16px;background:#fff;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--border);}
+.tc-b{padding:6px 16px;border-radius:20px;font-size:13px;cursor:pointer;transition:all 0.2s;font-weight:500;white-space:nowrap;}
+.tc-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 0;}
+.tc-c{border-radius:14px;padding:16px;}
+.tc-c.g{background:#F1F8E9;}
+.tc-c.r{background:#FFEBEE;}
+.tc-tl{font-size:13px;font-weight:600;margin-bottom:10px;}
+.tc-ts{display:flex;flex-wrap:wrap;gap:7px;}
+.tc-t{padding:4px 13px;border-radius:10px;font-size:12px;color:#fff;font-weight:500;}
+.tc-em{font-size:12px;color:#AAA;font-style:italic;}
+.tc-ov{margin:14px 16px;background:var(--card);border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.tc-ov-title{font-size:15px;font-weight:600;margin-bottom:14px;}
+.tc-g{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding-bottom:12px;}
+.tc-gi{display:flex;justify-content:center;}
+.tc-gb{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.25s;}
+.tc-gb.s{transform:scale(1.1);box-shadow:0 3px 10px rgba(0,0,0,0.18);}
+.tc-gb.w{opacity:0.4;border:2px dashed rgba(0,0,0,0.2);}
+.tc-legend{display:flex;gap:16px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.tc-li{display:flex;align-items:center;gap:6px;font-size:12px;color:#888;}
+.tc-ld{width:13px;height:13px;border-radius:3px;}
+.empty{text-align:center;padding:50px 0;color:var(--sub);}
+.empty-icon{font-size:44px;display:block;margin-bottom:10px;}
+</style>
 </head>
 <body>
-    <h1>🎮 康威生命游戏</h1>
-    
-    <div class="stats">
-        <div class="stat">世代: <span id="generation">0</span></div>
-        <div class="stat">存活: <span id="alive">0</span></div>
-        <div class="stat">状态: <span id="status">已暂停</span></div>
+
+<div class="topbar">
+  <div class="back-btn" id="backBtn" onclick="goHome()">&#8592;</div>
+  <div class="topbar-title" id="topTitle">洛克攻略站</div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="搜索精灵..." oninput="doSearch(this.value)">
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="p-home">
+  <div class="hero">
+    <div class="hero-inner" id="hero0" style="background:linear-gradient(135deg,#4A90D9 0%,#6AAFE6 100%)">
+      <h2>&#128218; 精灵图鉴</h2>
+      <p>全精灵资料一查便知</p>
     </div>
-    
-    <canvas id="gameCanvas"></canvas>
-    
-    <div class="controls">
-        <button class="btn-primary" id="startBtn">▶ 开始</button>
-        <button class="btn-secondary" id="stepBtn">⏭ 单步</button>
-        <button class="btn-danger" id="clearBtn">🗑 清空</button>
-        <button class="btn-warning" id="randomBtn">🎲 随机</button>
+    <div class="hero-inner inactive" id="hero1" style="background:linear-gradient(135deg,#F57C31 0%,#FFB74D 100%)">
+      <h2>&#9876;&#65039; 属性相克</h2>
+      <p>战斗必胜指南</p>
     </div>
-    
-    <div class="patterns">
-        <button class="btn-secondary" onclick="loadPattern('glider')">滑翔机</button>
-        <button class="btn-secondary" onclick="loadPattern('blinker')">闪烁器</button>
-        <button class="btn-secondary" onclick="loadPattern('pulsar')">脉冲星</button>
-        <button class="btn-secondary" onclick="loadPattern('gosper')">高斯帕枪</button>
+    <div class="hero-inner inactive" id="hero2" style="background:linear-gradient(135deg,#7B68EE 0%,#B39DDB 100%)">
+      <h2>&#9733; 热门精灵</h2>
+      <p>最强精灵排行榜</p>
     </div>
-    
-    <div class="speed-control">
-        <label>速度: </label>
-        <input type="range" id="speedSlider" min="1" max="60" value="10">
-        <span id="speedValue">10 帧/秒</span>
+    <div class="hero-dots">
+      <div class="hdot on" onclick="goSlide(0)"></div>
+      <div class="hdot" onclick="goSlide(1)"></div>
+      <div class="hdot" onclick="goSlide(2)"></div>
     </div>
-    
-    <div class="instructions">
-        <p>🖱 点击切换细胞 | 拖动绘制</p>
-        <p>空格: 暂停/继续 | R: 随机 | C: 清空</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><span class="emoji">&#128640;</span> 快捷入口</div>
+    <div class="qnav">
+      <div class="qnav-item" onclick="gotoPage('spirits')"><div class="icon">&#128218;</div><div class="txt">精灵图鉴</div></div>
+      <div class="qnav-item" onclick="gotoPage('type')"><div class="icon">&#9876;&#65039;</div><div class="txt">属性相克</div></div>
+      <div class="qnav-item" onclick="gotoPage('spirits')"><div class="icon">&#128293;</div><div class="txt">热门精灵</div></div>
+      <div class="qnav-item" onclick="gotoPage('spirits')"><div class="icon">&#128161;</div><div class="txt">新手攻略</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><span class="emoji">&#128302;</span> 属性分类</div>
+    <div class="type-grid">
+      <div class="tchip" style="background:var(--fire)" onclick="openSpirits('fire')"><span>火</span><span class="sub">Fire</span></div>
+      <div class="tchip" style="background:var(--water)" onclick="openSpirits('water')"><span>水</span><span class="sub">Water</span></div>
+      <div class="tchip" style="background:var(--grass)" onclick="openSpirits('grass')"><span>草</span><span class="sub">Grass</span></div>
+      <div class="tchip" style="background:var(--electric)" onclick="openSpirits('electric')"><span>电</span><span class="sub">Elec</span></div>
+      <div class="tchip" style="background:var(--ice)" onclick="openSpirits('ice')"><span>冰</span><span class="sub">Ice</span></div>
+      <div class="tchip" style="background:var(--dragon)" onclick="openSpirits('dragon')"><span>龙</span><span class="sub">Dragon</span></div>
+      <div class="tchip" style="background:var(--fighting)" onclick="openSpirits('fighting')"><span>武</span><span class="sub">Fight</span></div>
+      <div class="tchip" style="background:var(--ghost)" onclick="openSpirits('ghost')"><span>幽</span><span class="sub">Ghost</span></div>
+      <div class="tchip" style="background:var(--earth)" onclick="openSpirits('earth')"><span>土</span><span class="sub">Earth</span></div>
+      <div class="tchip" style="background:var(--poison)" onclick="openSpirits('poison')"><span>毒</span><span class="sub">Pois</span></div>
+      <div class="tchip" style="background:var(--mech)" onclick="openSpirits('mech')"><span>机</span><span class="sub">Mech</span></div>
+      <div class="tchip" style="background:var(--light)" onclick="openSpirits('light')"><span>光</span><span class="sub">Light</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><span class="emoji">&#128293;</span> 热门精灵</div>
+    <div id="hotWrap"></div>
+  </div>
+</div>
+
+<!-- SPIRITS LIST -->
+<div class="page" id="p-spirits">
+  <div class="list-tabs" id="listTabs"></div>
+  <div class="sort-row">
+    <div class="sbtn on" data-o="default" onclick="setSort(this)">默认</div>
+    <div class="sbtn" data-o="rarity" onclick="setSort(this)">稀有度</div>
+    <div class="sbtn" data-o="atk" onclick="setSort(this)">攻击</div>
+    <div class="sbtn" data-o="hp" onclick="setSort(this)">生命</div>
+    <div class="sbtn" data-o="spd" onclick="setSort(this)">速度</div>
+  </div>
+  <div class="count" id="countEl">共 0 个精灵</div>
+  <div class="slist" id="spiritListEl"></div>
+</div>
+
+<!-- TYPE CHART -->
+<div class="page" id="p-type">
+  <div class="tc-sel" id="tcSel"></div>
+  <div class="tc-info" id="tcInfoEl"></div>
+  <div class="tc-ov">
+    <div class="tc-ov-title">&#128202; 属性相克总览</div>
+    <div class="tc-g" id="tcGridEl"></div>
+    <div class="tc-legend">
+      <div class="tc-li"><div class="tc-ld" style="background:#4CAF50"></div><span>克制（×2）</span></div>
+      <div class="tc-li"><div class="tc-ld" style="background:#F44336;opacity:0.4;border:1px dashed #F44336"></div><span>被克（×0.5）</span></div>
+      <div class="tc-li"><div class="tc-ld" style="background:#E0E0E0"></div><span>正常（×1）</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="p-detail">
+  <div id="detailEl"></div>
+</div>
+
+<script>
+// ===== DATA =====
+const TYPES = {
+  fire:{name:'火',color:'#F57C31'},
+  water:{name:'水',color:'#4A90D9'},
+  grass:{name:'草',color:'#7BC142'},
+  electric:{name:'电',color:'#F5C542'},
+  ice:{name:'冰',color:'#7EC8E3'},
+  dragon:{name:'龙',color:'#7B68EE'},
+  fighting:{name:'武',color:'#D94848'},
+  ghost:{name:'幽',color:'#6B5B95'},
+  normal:{name:'普',color:'#A8A878'},
+  dark:{name:'暗',color:'#4A4458'},
+  earth:{name:'土',color:'#C4A882'},
+  flying:{name:'翼',color:'#A98FF3'},
+  bug:{name:'虫',color:'#92BC2C'},
+  poison:{name:'毒',color:'#A855F7'},
+  mech:{name:'机',color:'#7B8794'},
+  light:{name:'光',color:'#F9E0B7',text:'#333'},
+  shadow:{name:'暗影',color:'#2D2D2D'},
+};
+
+const TC = {
+  fire:{strong:['grass','bug','ice'],weak:['water','earth','rock']},
+  water:{strong:['fire','earth','rock'],weak:['electric','grass']},
+  grass:{strong:['water','earth'],weak:['fire','bug','flying','poison','ice']},
+  electric:{strong:['water','flying'],weak:['earth']},
+  ice:{strong:['grass','flying','dragon'],weak:['fire','fighting','rock','mech']},
+  dragon:{strong:['dragon'],weak:['ice','mech','light']},
+  fighting:{strong:['normal','dark','ice','mech'],weak:['flying','ghost','light']},
+  ghost:{strong:['ghost','fighting'],weak:['dark']},
+  normal:{strong:[],weak:['fighting','ghost']},
+  dark:{strong:['ghost','fighting'],weak:['light','bug']},
+  earth:{strong:['fire','electric','poison','rock'],weak:['water','grass','ice']},
+  flying:{strong:['grass','fighting','bug'],weak:['electric','ice','mech']},
+  bug:{strong:['grass','fighting','dark'],weak:['fire','flying','rock','ghost']},
+  poison:{strong:['grass','bug'],weak:['earth','ghost','dark']},
+  mech:{strong:['ice','earth'],weak:['fire','fighting','ground']},
+  light:{strong:['dark','ghost'],weak:['dark']},
+  shadow:{strong:['light','ghost'],weak:['light','dark']},
+};
+
+const ALL_TYPES = ['fire','water','grass','electric','ice','dragon','fighting','ghost','normal','dark','earth','flying','bug','poison','mech','light','shadow'];
+
+const RARITY = {legend:'传说',epic:'史诗',rare:'稀有',common:'普通'};
+
+const SPIRITS = [
+  {id:1,name:'火凤神·赤焰',type:['fire','flying'],emoji:'&#128293;', rarity:'legend',skills:['烈焰风暴','凤凰冲击','火羽护盾','燃尽'],desc:'操控烈焰的神鸟，传说中唯一能净化黑暗的圣灵。攻击与特攻均为顶级，速度极快。',hp:302,atk:165,def:112,spd:158,evolve:'初始形态→火羽凤→火凤神·赤焰',stats:{hp:45,atk:85,def:40,spd:70}},
+  {id:2,name:'沧溟龙皇',type:['water','dragon'],emoji:'&#12844;', rarity:'legend',skills:['龙之吐息','深海漩涡','水盾壁垒','潮汐之力'],desc:'深海中的龙族君主，攻防兼备的顶级精灵。HP和防御出色，是队伍中的核心坦克。',hp:358,atk:143,def:155,spd:118,evolve:'水龙宝宝→沧溟龙→沧溟龙皇',stats:{hp:95,atk:65,def:75,spd:55}},
+  {id:3,name:'苍穹雷神',type:['electric','flying'],emoji:'&#9889;', rarity:'legend',skills:['雷霆万钧','电闪雷鸣','避雷针','电磁护盾'],desc:'操控天空雷电的神灵，速度与攻击均为顶级，是PVP中出场率最高的精灵之一。',hp:278,atk:172,def:98,spd:182,evolve:'雷宝宝→闪电鹰→苍穹雷神',stats:{hp:38,atk:90,def:30,spd:85}},
+  {id:4,name:'深渊冥王',type:['ghost','dark'],emoji:'&#127776;', rarity:'epic',skills:['灵魂收割','冥狱火','暗影侵蚀','幽冥护甲'],desc:'来自深渊的冥界使者，克制幽灵系和格斗系。攻击能力极强，但防御脆弱。',hp:265,atk:178,def:85,spd:142,evolve:'冥魂→暗影魔→深渊冥王',stats:{hp:35,atk:92,def:28,spd:65}},
+  {id:5,name:'冰晶凤凰',type:['ice','flying'],emoji:'&#10052;', rarity:'epic',skills:['绝对零度','冰晶羽翼','寒冰护盾','极寒领域'],desc:'冰与雪的女神，速度快且有强大的控制能力。冰系招式克制草系、龙系和飞行系。',hp:252,atk:148,def:122,spd:168,evolve:'冰晶雀→霜羽凤→冰晶凤凰',stats:{hp:40,atk:75,def:42,spd:80}},
+  {id:6,name:'风暴领主',type:['flying','normal'],emoji:'&#127786;', rarity:'epic',skills:['风暴之翼','空气斩','顺风','气流护盾'],desc:'统御天空风暴的领主，各项能力均衡无短板，适合新手培养。飞行系打击面广。',hp:298,atk:135,def:128,spd:142,evolve:'雏鹰→风暴鸟→风暴领主',stats:{hp:55,atk:65,def:55,spd:60}},
+  {id:7,name:'古树守卫',type:['grass','earth'],emoji:'&#127807;', rarity:'rare',skills:['藤蔓缠绕','大地之力','寄生种子','自然回复'],desc:'守护森林的古老精灵，HP和特攻优秀。草系能有效克制水系和地面系。',hp:328,atk:115,def:135,spd:98,evolve:'幼树苗→林地巨木→古树守卫',stats:{hp:80,atk:55,def:60,spd:40}},
+  {id:8,name:'机械堡垒',type:['mech','earth'],emoji:'&#129504;', rarity:'rare',skills:['铁壁防御','地震','电磁炮','自我修复'],desc:'人类科技的结晶，防御和HP极高，是最可靠的肉盾。但速度较慢，需要配合控制技能。',hp:385,atk:125,def:178,spd:72,evolve:'零件组→战甲机器人→机械堡垒',stats:{hp:90,atk:60,def:80,spd:25}},
+  {id:9,name:'毒沼巨蟒',type:['poison','earth'],emoji:'&#128014;', rarity:'rare',skills:['毒液喷射','污泥攻击','毒雾','腐蚀'],desc:'生存于毒沼泽中的巨型蛇类，特攻出色且附带持续毒伤效果。土系弥补了脆皮的弱点。',hp:268,atk:138,def:108,spd:122,evolve:'毒蛇宝宝→沼泽巨蛇→毒沼巨蟒',stats:{hp:48,atk:72,def:40,spd:58}},
+  {id:10,name:'光之使者',type:['light','normal'],emoji:'&#11088;', rarity:'epic',skills:['圣光普照','净化之光','神圣庇护','祝福'],desc:'神圣光芒的化身，克制暗影系和幽灵系。技能带有治疗和净化效果，是辅助位的首选。',hp:292,atk:122,def:135,spd:148,evolve:'光之精灵→圣光使者→光之使者',stats:{hp:60,atk:58,def:60,spd:68}},
+  {id:11,name:'烈焰小狮',type:['fire','normal'],emoji:'&#129332;', rarity:'common',skills:['火焰冲击','抓挠','吼叫','烟火'],desc:'火焰王国的入门精灵，容易获得且培养简单，适合新手玩家前期过渡使用。',hp:245,atk:128,def:95,spd:112,evolve:'火焰小狮→焰鬃狮→烈焰雄狮王',stats:{hp:48,atk:68,def:38,spd:55}},
+  {id:12,name:'净水蛙',type:['water','normal'],emoji:'&#128056;', rarity:'common',skills:['水枪','泡沫','守住','水之波动'],desc:'温和的水系精灵，攻防平衡，获取容易。是游戏前期最常见的新手精灵之一。',hp:268,atk:105,def:115,spd:108,evolve:'水珠蛙→清水蛙→净水蛙王',stats:{hp:65,atk:50,def:52,spd:50}},
+];
+
+// ===== STATE =====
+let curPage = 'home';
+let curSpiritFilter = 'all';
+let curSort = 'default';
+let curSearch = '';
+let curTypeSel = 'fire';
+
+// ===== ROUTER =====
+function gotoPage(p) {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('p-'+p).classList.add('active');
+  curPage = p;
+  document.getElementById('backBtn').classList.toggle('show', p!=='home');
+  document.getElementById('searchInput').value = '';
+  curSearch = '';
+  if(p==='home') { document.getElementById('topTitle').textContent='洛克攻略站'; renderHot(); }
+  if(p==='spirits') { document.getElementById('topTitle').textContent='精灵图鉴'; renderSpiritsList(); }
+  if(p==='type') { document.getElementById('topTitle').textContent='属性相克'; renderTypeChart(); }
+  if(p==='detail') document.getElementById('topTitle').textContent='精灵详情';
+}
+
+function goHome() { gotoPage('home'); }
+
+// ===== HOME =====
+let slideIdx = 0;
+function goSlide(i) {
+  document.querySelectorAll('.hero-inner').forEach((el,idx)=>el.classList.toggle('inactive',idx!==i));
+  document.querySelectorAll('.hdot').forEach((el,idx)=>el.classList.toggle('on',idx===i));
+  slideIdx = i;
+}
+setInterval(()=>{ goSlide((slideIdx+1)%3); }, 3500);
+
+function renderHot() {
+  const sorted = [...SPIRITS].sort((a,b)=>b.atk-a.atk).slice(0,5);
+  document.getElementById('hotWrap').innerHTML = sorted.map(s=>`
+    <div class="hot-item" onclick="gotoSpirit(${s.id})">
+      <div class="emoji">${s.emoji}</div>
+      <div>
+        <div class="rname">${s.name}</div>
+        <div class="rsub">${s.type.map(t=>`<span class="ttag" style="background:${TYPES[t]?.color||'#999'}">${TYPES[t]?.name||t}</span>`).join(' ')}</div>
+      </div>
+      <div class="rarrow">›</div>
+    </div>`).join('');
+}
+
+// ===== SPIRITS LIST =====
+const FILTER_TABS = [
+  {k:'all',l:'全部'},
+  {k:'fire',l:'火'}, {k:'water',l:'水'}, {k:'grass',l:'草'},
+  {k:'electric',l:'电'}, {k:'ice',l:'冰'}, {k:'dragon',l:'龙'},
+  {k:'fighting',l:'武'}, {k:'ghost',l:'幽'}, {k:'mech',l:'机'},
+];
+
+function openSpirits(t) { curSpiritFilter=t; gotoPage('spirits'); }
+
+function renderSpiritsList() {
+  // tabs
+  document.getElementById('listTabs').innerHTML = FILTER_TABS.map(f=>`
+    <div class="ltab${curSpiritFilter===f.k?' on':''}" onclick="setFilter('${f.k}')">${f.l}</div>`).join('');
+
+  let list = [...SPIRITS];
+  if(curSpiritFilter!=='all') list = list.filter(s=>s.type.includes(curSpiritFilter));
+  if(curSearch) list = list.filter(s=>s.name.includes(curSearch));
+
+  if(curSort==='rarity') list.sort((a,b)=>{ const o={legend:4,epic:3,rare:2,common:1}; return o[b.rarity]-o[a.rarity]; });
+  if(curSort==='atk') list.sort((a,b)=>b.atk-a.atk);
+  if(curSort==='hp') list.sort((a,b)=>b.hp-a.hp);
+  if(curSort==='spd') list.sort((a,b)=>b.spd-a.spd);
+
+  document.getElementById('countEl').textContent = `共 ${list.length} 个精灵`;
+  document.getElementById('spiritListEl').innerHTML = list.length ? list.map(s=>`
+    <div class="scard" onclick="gotoSpirit(${s.id})">
+      <div class="avt" style="background:${TYPES[s.type[0]]?.color||'#999'}20">${s.emoji}</div>
+      <div class="sp">
+        <div class="spname">${s.name} <span class="stars">${'&#9733;'.repeat(5)}</span></div>
+        <div>${s.type.map(t=>`<span class="ttag" style="background:${TYPES[t]?.color||'#999'}">${TYPES[t]?.name||t}</span>`).join(' ')}</div>
+        <div class="spstats">攻:${s.atk} | 防:${s.def} | 速:${s.spd}</div>
+      </div>
+    </div>`).join('') : `<div class="empty"><div class="empty-icon">&#128270;</div>没有找到符合条件的精灵</div>`;
+}
+
+function setFilter(k) { curSpiritFilter=k; renderSpiritsList(); }
+function setSort(el) {
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  curSort=el.dataset.o;
+  renderSpiritsList();
+}
+function doSearch(v) {
+  curSearch=v.trim();
+  if(curPage!=='spirits') return;
+  renderSpiritsList();
+}
+
+// ===== TYPE CHART =====
+const TC_COLORS = {
+  fire:'#F57C31',water:'#4A90D9',grass:'#7BC142',electric:'#F5C542',
+  ice:'#7EC8E3',dragon:'#7B68EE',fighting:'#D94848',ghost:'#6B5B95',
+  normal:'#A8A878',dark:'#4A4458',earth:'#C4A882',flying:'#A98FF3',
+  bug:'#92BC2C',poison:'#A855F7',mech:'#7B8794',light:'#F9E0B7',shadow:'#2D2D2D',
+};
+
+function renderTypeChart() {
+  const T = TC_COLORS;
+  const allDisplay = ['fire','water','grass','electric','ice','dragon','fighting','ghost','normal','earth','flying','bug','poison','mech','light','dark'];
+  const tcBtn = (k)=>{
+    const n=TYPES[k]?.name||k;
+    const c=T[k]||'#999';
+    return `<div class="tc-b" style="background:${curTypeSel===k?'var(--blue)':TYPES[k]?.color||'#999'};color:${curTypeSel===k?'#fff':(k==='light'?'#333':'#fff')}" onclick="selType('${k}')">${n}</div>`;
+  };
+  document.getElementById('tcSel').innerHTML = allDisplay.map(k=>tcBtn(k)).join('');
+
+  const s = TC[curTypeSel]||{strong:[],weak:[]};
+  const st = s.strong.map(t=>`<span class="ctag" style="background:${T[t]||'#999'}">${TYPES[t]?.name||t}</span>`).join('');
+  const wk = s.weak.map(t=>`<span class="ctag" style="background:${T[t]||'#999'}">${TYPES[t]?.name||t}</span>`).join('');
+  document.getElementById('tcInfoEl').innerHTML = `
+    <div class="tc-c g"><div class="tc-tl">&#9650; 克制属性</div><div class="tc-ts">${st||'<span class="tc-em">无</span>'}</div></div>
+    <div class="tc-c r"><div class="tc-tl">&#9660; 被克制属性</div><div class="tc-ts">${wk||'<span class="tc-em">无</span>'}</div></div>`;
+
+  document.getElementById('tcGridEl').innerHTML = allDisplay.map(t=>{
+    let cls='tc-gb';
+    if(s.strong?.includes(t)) cls+=' s';
+    if(s.weak?.includes(t)) cls+=' w';
+    const c=T[t]||'#999';
+    return `<div class="tc-gi"><div class="${cls}" style="background:${c};color:${t==='light'?'#333':'#fff'}" title="${TYPES[t]?.name||t}">${TYPES[t]?.name||t}</div></div>`;
+  }).join('');
+}
+
+function selType(k) { curTypeSel=k; renderTypeChart(); }
+
+// ===== DETAIL =====
+function gotoSpirit(id) {
+  const s = SPIRITS.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('topTitle').textContent=s.name;
+  document.getElementById('backBtn').classList.add('show');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-detail').classList.add('active');
+
+  const c0=TYPES[s.type[0]]?.color||'#999';
+  const c1=TYPES[s.type[1]]?.color||c0;
+  const barColor=a=>{
+    if(a>=160) return '#F44336';
+    if(a>=130) return '#FF9800';
+    if(a>=100) return '#4CAF50';
+    return '#2196F3';
+  };
+  const stars='&#9733;'.repeat(5);
+
+  const s2=JSON.parse(JSON.stringify(s.stats||{hp:50,atk:50,def:50,spd:50}));
+  const maxS={hp:100,atk:100,def:100,spd:100};
+
+  document.getElementById('detailEl').innerHTML=`
+    <div class="dhdr" style="background:linear-gradient(160deg,${c0},${c1})">
+      <div class="davatar" style="background:rgba(255,255,255,0.2)">${s.emoji}</div>
+      <div class="dname">${s.name}</div>
+      <div class="dtags">
+        ${s.type.map(t=>`<span class="dbadge">${TYPES[t]?.name||t}</span>`).join('')}
+        <span class="dbadge">${RARITY[s.rarity]||s.rarity}</span>
+        <span class="dbadge">${stars}</span>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Grid settings
-        const cellSize = 10;
-        const cols = 80;
-        const rows = 50;
-        canvas.width = cols * cellSize;
-        canvas.height = rows * cellSize;
-        
-        // Game state
-        let grid = createGrid();
-        let running = false;
-        let generation = 0;
-        let fps = 10;
-        let intervalId = null;
-        
-        // Colors for cells (rainbow effect based on position)
-        function getCellColor(x, y) {
-            const hue = (x * 3 + y * 5 + generation) % 360;
-            return `hsl(${hue}, 80%, 60%)`;
-        }
-        
-        // Create empty grid
-        function createGrid() {
-            return Array(rows).fill().map(() => Array(cols).fill(0));
-        }
-        
-        // Count neighbors
-        function countNeighbors(grid, x, y) {
-            let count = 0;
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    if (i === 0 && j === 0) continue;
-                    const ni = (y + i + rows) % rows;
-                    const nj = (x + j + cols) % cols;
-                    count += grid[ni][nj];
-                }
-            }
-            return count;
-        }
-        
-        // Next generation
-        function nextGeneration() {
-            const newGrid = createGrid();
-            for (let y = 0; y < rows; y++) {
-                for (let x = 0; x < cols; x++) {
-                    const neighbors = countNeighbors(grid, x, y);
-                    if (grid[y][x] === 1) {
-                        newGrid[y][x] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
-                    } else {
-                        newGrid[y][x] = neighbors === 3 ? 1 : 0;
-                    }
-                }
-            }
-            grid = newGrid;
-            generation++;
-        }
-        
-        // Draw grid
-        function draw() {
-            ctx.fillStyle = '#0a0a1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw grid lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x <= cols; x++) {
-                ctx.beginPath();
-                ctx.moveTo(x * cellSize, 0);
-                ctx.lineTo(x * cellSize, canvas.height);
-                ctx.stroke();
-            }
-            for (let y = 0; y <= rows; y++) {
-                ctx.beginPath();
-                ctx.moveTo(0, y * cellSize);
-                ctx.lineTo(canvas.width, y * cellSize);
-                ctx.stroke();
-            }
-            
-            // Draw cells
-            let alive = 0;
-            for (let y = 0; y < rows; y++) {
-                for (let x = 0; x < cols; x++) {
-                    if (grid[y][x] === 1) {
-                        alive++;
-                        ctx.fillStyle = getCellColor(x, y);
-                        ctx.shadowColor = getCellColor(x, y);
-                        ctx.shadowBlur = 5;
-                        ctx.fillRect(x * cellSize + 1, y * cellSize + 1, cellSize - 2, cellSize - 2);
-                    }
-                }
-            }
-            ctx.shadowBlur = 0;
-            
-            // Update stats
-            document.getElementById('generation').textContent = generation;
-            document.getElementById('alive').textContent = alive;
-            document.getElementById('status').textContent = running ? '运行中' : '已暂停';
-        }
-        
-        // Game loop
-        function gameLoop() {
-            if (running) {
-                nextGeneration();
-            }
-            draw();
-        }
-        
-        // Start/Stop
-        function toggleRunning() {
-            running = !running;
-            document.getElementById('startBtn').textContent = running ? '⏸ 暂停' : '▶ 开始';
-        }
-        
-        // Random grid
-        function randomize() {
-            grid = createGrid();
-            for (let y = 0; y < rows; y++) {
-                for (let x = 0; x < cols; x++) {
-                    grid[y][x] = Math.random() < 0.3 ? 1 : 0;
-                }
-            }
-            generation = 0;
-            draw();
-        }
-        
-        // Clear grid
-        function clearGrid() {
-            grid = createGrid();
-            generation = 0;
-            running = false;
-            document.getElementById('startBtn').textContent = '▶ 开始';
-            draw();
-        }
-        
-        // Load patterns
-        function loadPattern(name) {
-            clearGrid();
-            const cx = Math.floor(cols / 2);
-            const cy = Math.floor(rows / 2);
-            
-            const patterns = {
-                glider: [[0, 1], [1, 2], [2, 0], [2, 1], [2, 2]],
-                blinker: [[0, 0], [0, 1], [0, 2]],
-                pulsar: [
-                    [-6,-4],[-6,-3],[-6,-2],[-6,2],[-6,3],[-6,4],
-                    [-4,-6],[-3,-6],[-2,-6],[-4,-1],[-3,-1],[-2,-1],
-                    [-4,1],[-3,1],[-2,1],[-4,6],[-3,6],[-2,6],
-                    [-1,-4],[-1,-3],[-1,-2],[-1,2],[-1,3],[-1,4],
-                    [1,-4],[1,-3],[1,-2],[1,2],[1,3],[1,4],
-                    [2,-6],[3,-6],[4,-6],[2,-1],[3,-1],[4,-1],
-                    [2,1],[3,1],[4,1],[2,6],[3,6],[4,6],
-                    [6,-4],[6,-3],[6,-2],[6,2],[6,3],[6,4]
-                ],
-                gosper: [
-                    [0,24],[1,22],[1,24],[2,12],[2,13],[2,20],[2,21],[2,34],[2,35],
-                    [3,11],[3,15],[3,20],[3,21],[3,34],[3,35],[4,0],[4,1],[4,10],
-                    [4,16],[4,20],[4,21],[5,0],[5,1],[5,10],[5,14],[5,16],[5,17],
-                    [5,22],[5,24],[6,10],[6,16],[6,24],[7,11],[7,15],[8,12],[8,13]
-                ]
-            };
-            
-            const pattern = patterns[name];
-            if (pattern) {
-                pattern.forEach(([dy, dx]) => {
-                    const y = cy + dy;
-                    const x = cx + dx;
-                    if (y >= 0 && y < rows && x >= 0 && x < cols) {
-                        grid[y][x] = 1;
-                    }
-                });
-            }
-            draw();
-        }
-        
-        // Mouse interaction
-        let isDrawing = false;
-        let lastCell = null;
-        
-        canvas.addEventListener('mousedown', (e) => {
-            isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
-            const x = Math.floor((e.clientX - rect.left) / cellSize);
-            const y = Math.floor((e.clientY - rect.top) / cellSize);
-            if (x >= 0 && x < cols && y >= 0 && y < rows) {
-                grid[y][x] = grid[y][x] ? 0 : 1;
-                lastCell = {x, y};
-                draw();
-            }
-        });
-        
-        canvas.addEventListener('mousemove', (e) => {
-            if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = Math.floor((e.clientX - rect.left) / cellSize);
-            const y = Math.floor((e.clientY - rect.top) / cellSize);
-            if (x >= 0 && x < cols && y >= 0 && y < rows) {
-                if (!lastCell || lastCell.x !== x || lastCell.y !== y) {
-                    grid[y][x] = 1;
-                    lastCell = {x, y};
-                    draw();
-                }
-            }
-        });
-        
-        canvas.addEventListener('mouseup', () => {
-            isDrawing = false;
-            lastCell = null;
-        });
-        
-        canvas.addEventListener('mouseleave', () => {
-            isDrawing = false;
-            lastCell = null;
-        });
-        
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                toggleRunning();
-            } else if (e.code === 'KeyR') {
-                randomize();
-            } else if (e.code === 'KeyC') {
-                clearGrid();
-            }
-        });
-        
-        // Button controls
-        document.getElementById('startBtn').addEventListener('click', toggleRunning);
-        document.getElementById('stepBtn').addEventListener('click', () => {
-            nextGeneration();
-            draw();
-        });
-        document.getElementById('clearBtn').addEventListener('click', clearGrid);
-        document.getElementById('randomBtn').addEventListener('click', randomize);
-        
-        // Speed control
-        const speedSlider = document.getElementById('speedSlider');
-        speedSlider.addEventListener('input', (e) => {
-            fps = parseInt(e.target.value);
-            document.getElementById('speedValue').textContent = `${fps} 帧/秒`;
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = setInterval(gameLoop, 1000 / fps);
-            }
-        });
-        
-        // Initialize
-        randomize();
-        intervalId = setInterval(gameLoop, 1000 / fps);
-    </script>
+    <div class="card">
+      <div class="section-title"><span class="emoji">&#128200;</span> 种族值</div>
+      <div class="sg">
+        <div class="srow"><div class="slbl">HP</div><div class="sbg"><div class="sbar" style="width:${s.hp/4}%;background:${barColor(s.hp)}"></div></div><div class="sval">${s.hp}</div></div>
+        <div class="srow"><div class="slbl">攻</div><div class="sbg"><div class="sbar" style="width:${s.atk/2}%;background:${barColor(s.atk)}"></div></div><div class="sval">${s.atk}</div></div>
+        <div class="srow"><div class="slbl">防</div><div class="sbg"><div class="sbar" style="width:${s.def/2}%;background:${barColor(s.def)}"></div></div><div class="sval">${s.def}</div></div>
+        <div class="srow"><div class="slbl">速</div><div class="sbg"><div class="sbar" style="width:${s.spd/2}%;background:${barColor(s.spd)}"></div></div><div class="sval">${s.spd}</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><span class="emoji">&#9876;&#65039;</span> 属性克制</div>
+      <div class="counter-grid">
+        <div class="ci grn"><div class="cilbl">&#9650; 克制</div><div class="ctags">${(TC[s.type[0]]?.strong||[]).concat(TC[s.type[1]]?.strong||[]).filter((v,i,a)=>a.indexOf(v)===i).map(t=>`<span class="ctag" style="background:${T[t]||'#999'}">${TYPES[t]?.name||t}</span>`).join('')||'<span class="tc-em">无</span>'}</div></div>
+        <div class="ci red"><div class="cilbl">&#9660; 被克</div><div class="ctags">${(TC[s.type[0]]?.weak||[]).concat(TC[s.type[1]]?.weak||[]).filter((v,i,a)=>a.indexOf(v)===i).map(t=>`<span class="ctag" style="background:${T[t]||'#999'}">${TYPES[t]?.name||t}</span>`).join('')||'<span class="tc-em">无</span>'}</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><span class="emoji">&#9876;&#65039;</span> 技能列表</div>
+      <div class="sk-tags">${s.skills.map(sk=>`<div class="sk-tag">&#9876;&#65039; ${sk}</div>`).join('')}</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><span class="emoji">&#127795;</span> 进化链</div>
+      <div style="font-size:13px;color:#666;line-height:1.7">${s.evolve}</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><span class="emoji">&#128161;</span> 培养建议</div>
+      <div style="font-size:13px;color:#555;line-height:1.8">${s.desc}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="section-title"><span class="emoji">&#128200;</span> 六维分析</div>
+      <div class="sg">
+        <div class="srow"><div class="slbl">HP</div><div class="sbg"><div class="sbar" style="width:${s2.hp}%;background:#4CAF50"></div></div><div class="sval">${s2.hp}</div></div>
+        <div class="srow"><div class="slbl">攻击</div><div class="sbg"><div class="sbar" style="width:${s2.atk}%;background:#F44336"></div></div><div class="sval">${s2.atk}</div></div>
+        <div class="srow"><div class="slbl">防御</div><div class="sbg"><div class="sbar" style="width:${s2.def}%;background:#2196F3"></div></div><div class="sval">${s2.def}</div></div>
+        <div class="srow"><div class="slbl">速度</div><div class="sbg"><div class="sbar" style="width:${s2.spd}%;background:#FF9800"></div></div><div class="sval">${s2.spd}</div></div>
+      </div>
+    </div>
+
+    <button class="share-btn" onclick="shareSpirit('${s.name}')">&#128279; 收藏 / 分享精灵</button>
+  `;
+}
+
+function shareSpirit(name) {
+  if(navigator.share) {
+    navigator.share({title:name+' - 洛克攻略站',text:'查看'+name+'的详细攻略！',url:location.href});
+  } else {
+    navigator.clipboard.writeText(location.href).then(()=>alert('链接已复制到剪贴板！'));
+  }
+}
+
+// ===== INIT =====
+renderHot();
+</script>
 </body>
 </html>
